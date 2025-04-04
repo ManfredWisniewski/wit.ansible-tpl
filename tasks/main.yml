@@ -1,0 +1,16 @@
+---
+# tasks file for wit.common
+
+- name: Ubuntu install basic packages
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  loop:
+    - mc
+    - net-tools
+    - bash-completion
+    - curl
+    - wget
+    - htop
+  when: ansible_facts['distribution']=="Ubuntu"
