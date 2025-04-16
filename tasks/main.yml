@@ -1,16 +1,7 @@
 ---
-# tasks file for wit.common
+# tasks file for wit.
 
-- name: Ubuntu install basic packages
-  apt:
-    name: "{{ item }}"
-    state: present
-    update_cache: true
-  loop:
-    - mc
-    - net-tools
-    - bash-completion
-    - curl
-    - wget
-    - htop
-  when: ansible_facts['distribution']=="Ubuntu"
+- name: Import DNS hostip check from wit.dnstools
+  ansible.builtin.include_role:
+    name: wit.dnstools
+    tasks_from: checkhostip
