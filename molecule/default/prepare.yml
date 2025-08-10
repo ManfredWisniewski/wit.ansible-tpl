@@ -1,0 +1,8 @@
+---
+- name: Prepare
+  hosts: all
+  vars:
+  tasks:
+    - name: No-op prepare
+      debug:
+        msg: "Prepare step"

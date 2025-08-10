@@ -5,3 +5,4 @@
   ansible.builtin.include_role:
     name: wit.dnstools
     tasks_from: checkhostip
+  when: not (common_skip_dns_check | default(false) | bool)

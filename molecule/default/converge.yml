@@ -1,7 +1,11 @@
 ---
 - name: Converge
   hosts: all
+  vars:
+    common_skip_dns_check: true
+    hostname: converge_test_host
+    ansible_managed: "Managed by Ansible — edits may be overwritten"
   tasks:
-    - name: "Include wit."
+    - name: "Include role under test"
       include_role:
-        name: "wit."
+        name: "{{ role_name | default('wit.ansible-tpl') }}"
