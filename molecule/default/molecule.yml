@@ -8,17 +8,29 @@ driver:
   name: docker
 platforms:
   - name: instance
-    image: geerlingguy/docker-ubuntu2004-ansible:latest
+    image: geerlingguy/docker-ubuntu2204-ansible:latest
     pre_build_image: true
+    command: "/bin/sleep infinity"
+    user: root
     privileged: true
-    command: ""
+    tmpfs:
+      - /tmp
+      - /run
+      - /run/lock
+      - /var/tmp
 provisioner:
   name: ansible
   env:
-    ALLOW_BROKEN_CONDITIONALS: true
+    ANSIBLE_ALLOW_BROKEN_CONDITIONALS: "1"
     ANSIBLE_ROLES_PATH: "../../../:/usr/share/ansible/roles:/etc/ansible/roles:/root/.ansible/roles"
     ANSIBLE_DEPRECATION_WARNINGS: "true"
     ANSIBLE_CONFIG: "${MOLECULE_SCENARIO_DIRECTORY}/ansible.cfg"
+  inventory:
+    group_vars:
+      all:
+        ansible_connection: docker
+        ansible_user: root
+        ansible_remote_tmp: /tmp/.ansible/tmp
 verifier:
   name: ansible
 lint: |
