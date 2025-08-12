@@ -5,6 +5,7 @@
     common_skip_dns_check: true
     hostname: converge_test_host
     ansible_managed: "Managed by Ansible — edits may be overwritten"
+    wit_devmode: false # set for debugging, not required in tests
   tasks:
     - name: "Include role under test"
       include_role:
