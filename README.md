@@ -1,7 +1,7 @@
 # wit.ansible-tpl
 
 Minimal Ansible template for building reusable roles and playbooks with Molecule testing and Galaxy-ready metadata.
-You can find roles created with this template at my GitHub page [Manfred Wisniewski](https://github.com/ManfredWisniewski?tab=repositories)
+You can find roles created with this template at my GitHub page [Wisniewski IT Solutions](https://github.com/ManfredWisniewski?tab=repositories)
 
 ## Features
 - **Role-first layout** under `roles/` with Galaxy metadata.
@@ -21,13 +21,14 @@ You can find roles created with this template at my GitHub page [Manfred Wisniew
 - `roles/<your_role>/molecule/default/` — Molecule scenario.
 
 ## Quickstart
-- Rename this repository to the name of your role `your_role/`.
+- Clone this repository using the template functionality and give it your name `your_role/`.
 - Declare dependencies in:
   - `your_role/meta/main.yml` (role deps, if truly required)
 - Install deps:
   ```bash
   ansible-galaxy install -r requirements.yml
   ```
+- Add some logic to `your_role/tasks/main.yml`.
 ## Variables
 - Put shared defaults in `your_role/defaults/main.yml`.
 - Keep variables modular and prefixed, e.g. `your_role_*`.
