@@ -1,84 +1,93 @@
-# Role Name
+# wit.ansible-tpl
 
-A brief description of the role goes here.
+Minimal Ansible template for building reusable roles and playbooks with Molecule testing and Galaxy-ready metadata.
+You can find roles created with this template at my GitHub page [Manfred Wisniewski](https://github.com/ManfredWisniewski?tab=repositories)
+
+## Features
+- **Role-first layout** under `roles/` with Galaxy metadata.
+- **Molecule** scenario `default/` for lint, converge, verify, idempotence.
+- **Collections/roles management** via Galaxy requirements.
+- **Make targets** (optional) for common tasks.
+- **GitHub Actions-ready** for running Molecule tests in CI.
 
 ## Requirements
+- Ansible >= 2.15
+- Python >= 3.10
+- Molecule + Docker (for local tests)
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+## Project structure
+- `roles/<your_role>/` — role code.
+- `roles/<your_role>/meta/main.yml` — Galaxy info.
+- `roles/<your_role>/molecule/default/` — Molecule scenario.
 
-## Role Variables
+## Quickstart
+- Rename this repository to the name of your role `your_role/`.
+- Declare dependencies in:
+  - `your_role/meta/main.yml` (role deps, if truly required)
+- Install deps:
+  ```bash
+  ansible-galaxy install -r requirements.yml
+  ```
+## Variables
+- Put shared defaults in `your_role/defaults/main.yml`.
+- Keep variables modular and prefixed, e.g. `your_role_*`.
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+## Testing (Molecule)
+- Scenario at `your_role/molecule/default/`.
+- Collections/roles resolved via Molecule `dependency` step.
+- Typical flow:
+  ```bash
+  molecule test
+  # or
+  molecule converge
+  molecule verify
+  ```
+## Linting
+- `ansible-lint` and `yamllint` can be invoked from the scenario’s `lint` section or manually:
+  ```bash
+  yamllint .
+  ansible-lint .
+  ```
 
-## Dependencies
+## CI
+- Run:
+  - `ansible-galaxy install -r requirements.yml`
+  - `molecule test` inside `your_role/`
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+## GitHub Actions
+- You can add a minimal workflow like:
+  ```yaml
+  name: Molecule
+  on:
+    push:
+    pull_request:
+  jobs:
+    test:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+        - uses: actions/setup-python@v5
+          with:
+            python-version: '3.x'
+        - name: Install dependencies
+          run: |
+            python -m pip install --upgrade pip
+            pip install ansible molecule-plugins[docker] docker ansible-lint yamllint
+            ansible-galaxy install -r roles/requirements.yml
+        - name: Run Molecule
+          working-directory: roles/your_role
+          run: |
+            molecule test
+  ```
 
-## Example Playbook
-
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+## Conventions
+- Keep tasks small and idempotent.
+- Use `include_role`/`import_tasks` for modularity.
+- Tag critical operations, support `--skip-tags`.
+- Avoid role hard-dependencies unless absolutely necessary; prefer documenting variables and expectations.
 
 ## License
+MIT
 
-BSD
-
-## Author Information
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
-
-# Ansible Role: common
-
-An Ansible role that manages aedar basic configuration settings on Ubuntu based systems.
-https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse_roles.html
-git://bitbucket.org/witconsult/aedar-semaphore.git
-
-t2todL:
-
-- name: Set hostname
-  ansible.builtin.hostname:
-  name: "{{ common_hostname }}"
-  when: common_hostname is not none
-
-  - name: "Ping hosts"
-    action: ping
-
-## Supported OS
-
-- Ubuntu
-
-## Role Variables
-
-## Dependencies
-
-## Preparations
-
-### ansible configuration
-
-/etc/ansible/ansible.cfg
-depreciation_warnings: False
-remote_tmp = ~/.ansible/tmp
-local_tmp = ~/.ansible/tmp
-
-### copy ssh key (from main)
-
-### copy ssh id
-
-potentially create root password and allow ssh login as root:
-
-`sudo passwd root sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config sudo systemctl restart ssh`
-
-`ssh-copy-id -i ./.ssh/id_rsa.pub user@server`
-
-### install python & ansible
-
-````sudo add-apt-repository ppa:deadsnakes/ppa
-sudo apt-get install -y python3.8 python3-pip virtualenv
-
-sudo apt-add-repository ppa:ansible/ansible
-sudo apt-get update
-sudo apt-get install ansible -y```
-````
+## Author
+Manfred Wisniewski - WIT Solutions
