@@ -13,6 +13,8 @@ platforms:
     command: "/bin/sleep infinity"
     user: root
     privileged: true
+    volumes:
+      - "/tmp:/tmp"
     tmpfs:
       - /tmp
       - /run
