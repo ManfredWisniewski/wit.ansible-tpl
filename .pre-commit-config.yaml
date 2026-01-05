@@ -1,0 +1,18 @@
+repos:
+  - repo: local
+    hooks:
+      - id: noseyparker
+        name: Nosey Parker (local secrets scan)
+        language: docker_image
+        entry: ghcr.io/praetorian-inc/noseyparker:latest
+        args:
+          - scan
+          - --ignore
+          - .noseyparker-ignore
+          - --datastore
+          - /tmp/noseyparker.np
+          - .
+        pass_filenames: false
+        require_serial: true
+        fail: true
+        stages: [pre-commit]
