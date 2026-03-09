@@ -1,8 +1,14 @@
 ---
 - name: Prepare
   hosts: all
+  gather_facts: false
   vars:
   tasks:
-    - name: No-op prepare
-      debug:
-        msg: "Prepare step"
+    - name: Ensure Ansible remote tmp exists
+      ansible.builtin.raw: |
+        set -e
+        mkdir -p /tmp/.ansible/tmp
+        chmod 700 /tmp/.ansible /tmp/.ansible/tmp
+
+    - name: Gather facts
+      ansible.builtin.setup:
